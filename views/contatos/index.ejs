@@ -1,0 +1,26 @@
+<form class="form-inline" action="/contatos/create" method="post">
+  <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome">
+  <input type="email" class="form-control" name="email" id="email" placeholder="E-mail">
+  <button class="btn btn-primary btn-raised" type="submit">Cadastrar</button>
+</form>
+
+<% usuario.contatos.forEach(function (contato, index) { %>
+  <div class="list-group">
+    <div class="list-group-item">
+      <div class="row-picture">
+        <img class="circle" src="http://lorempixel.com/56/56/people/1" alt="icon">
+      </div>
+      <div class="row-content">
+        <h4 class="list-group-item-heading">
+          <%- contato.nome %>(<%- contato.email %>)
+          <a href="/contatos/<%- index %>/edit">Editar</a>
+          <a href="/contatos/<%- index %>/delete">Excluir</a>
+        </h4>
+
+        <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus</p>
+      </div>
+    </div>
+    <div class="list-group-separator"></div>
+  </div>
+
+<% })%>
