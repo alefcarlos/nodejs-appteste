@@ -7,12 +7,15 @@
   },
   "dependencies": {
     "body-parser": "^1.13.3",
+    "bootstrap": "^3.3.6",
     "debug": "~2.2.0",
     "ejs": "~2.3.3",
     "express": "~4.13.1",
-    "express-layout": "^0.1.0",
+    "express-ejs-layouts": "^2.1.0",
     "express-load": "^1.1.15",
     "express-session": "^1.13.0",
+    "jquery": "^2.2.3",
+    "method-override": "^2.3.5",
     "morgan": "~1.6.1",
     "serve-favicon": "~2.3.0"
   }
