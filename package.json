@@ -13,7 +13,6 @@
     "ejs": "~2.3.3",
     "express": "~4.13.1",
     "express-ejs-layouts": "^2.1.0",
-    "express-load": "^1.1.15",
     "express-session": "^1.13.0",
     "jquery": "^2.2.3",
     "method-override": "^2.3.5",
