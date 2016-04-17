@@ -18,37 +18,12 @@ module.exports = function (app) {
 
       //Validar se o usuário existe:
       var query = { email: email };
-      User.findOne(query, function (err, user) {
+      var userLogin = new User({email: email});
+
+      userLogin.createIfNotExists(query, function (err, user) {
         if (err) throw err;
-        console.log('tentou logar ' + query.email);
-
-        //Se o usuário exister, usá-lo, senão criar o usuário e salvar na sessão.
-        if (user){
-          console.log('encontrou usuario' + user);
-          sess.usuario = user;
-
-          console.log(sess.usuario);
-
-          res.redirect('/home');
-        }
-        else {
-          console.log('usuario não existe');
-          var usuario = new User({
-              email: email
-          });
-
-          usuario.save(function (err) {
-            if (err) throw err;
-
-            console.log('Novo usuário criado');
-          });
-
-          sess.usuario = usuario;
-
-          console.log(sess.usuario);
-
-          res.redirect('/home');
-        }
+        sess.usuario = user;
+        res.redirect('/home');
       });
     },
     logout: function (req, res) {

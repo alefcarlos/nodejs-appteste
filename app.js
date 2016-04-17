@@ -28,7 +28,7 @@ var sess = {
 mongoose.connect('mongodb://localhost/app-teste', function (err) {
   if (err) throw err;
 
-  console.log('Conectado ao mongo: ' + uri);
+  console.log('Conectado ao mongo');
 });
 
 //configuração de qual engine usaremos para a view

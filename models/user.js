@@ -1,15 +1,51 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var contato = new Schema({
+var contato = Schema({
   nome : String,
   email: String
 });
 
-var userSchema = new Schema({
+var userSchema = Schema({
   email:{type: String, required: true, index : {unique: true}},
   contatos: [contato]
 });
+
+//Métodos customizados
+userSchema.statics.addContact = function (userId, contactModel, callback) {
+  this.findById(userId, function (err, user) {
+      if(err) throw err;
+
+      user.contatos.push(contactModel);
+      user.save(function (err) {
+        if (err) throw err;
+
+        return callback(err);
+      });
+  });
+};
+
+userSchema.methods.createIfNotExists = function (query, callback) {
+  var self = this;
+  this.model('User').findOne(query, function (err, user) {
+    if (err) throw err;
+
+    //Se o usuário existir, usá-lo, senão criar o usuário e retornar no callback.
+    if (user){
+      console.log('Achou usuário:' + user.email);
+      return callback(err, user);
+    }
+    else {
+      console.log('vai criar um usuário:' + self.email);
+      self.save(function (err, userSaved) {
+        if (err) throw err;
+
+        return callback(err, userSaved);
+      });
+    }
+  });
+};
+
 
 var User = mongoose.model('User', userSchema);
 

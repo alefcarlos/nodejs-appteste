@@ -21,19 +21,23 @@ module.exports = function (app) {
       if (email && nome)
       {
         var _id = req.session.usuario._id;
-
-        User.findById(_id, function (err, user) {
-          if(err) throw err;
-
-          user.contatos.push({ email: email, nome: nome });
-          user.save(function (err) {
-            if (err) throw err;
-
-            console.log('contato salvo com sucesso!');
-
-            res.redirect('/contatos');
-          });
+        User.addContact(_id, { email: email, nome: nome }, function (err) {
+          if (err) throw err;
+          res.redirect('/contatos');
         });
+
+        //User.findById(_id, function (err, user) {
+        //  if(err) throw err;
+
+        //  user.contatos.push({ email: email, nome: nome });
+        //  user.save(function (err) {
+        //    if (err) throw err;
+
+        //    console.log('contato salvo com sucesso!');
+
+        //    res.redirect('/contatos');
+        //  });
+        //});
       }
     },
     update: function (req, res) {
