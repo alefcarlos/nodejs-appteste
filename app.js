@@ -25,8 +25,7 @@ var sess = {
 }
 
 //setup mongodb
-var uri = 'mongodb://localhost/app-teste';
-global.db = mongoose.connect(uri, function (err) {
+mongoose.connect('mongodb://localhost/app-teste', function (err) {
   if (err) throw err;
 
   console.log('Conectado ao mongo: ' + uri);
