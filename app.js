@@ -1,10 +1,11 @@
 //Módulos do nodejs
 var express = require('express');
-var load = require('express-load');
+var consign = require('consign');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var expressLayouts = require('express-ejs-layouts');
 var methodOverride = require('method-override');
+var mongoose = require('mongoose');
 
 //Modulos customizados
 var pathName = require('./middleware/get-url-path');
@@ -23,7 +24,15 @@ var sess = {
    }
 }
 
-//configuração de qual engine usaremos para a viw
+//setup mongodb
+var uri = 'mongodb://localhost/app-teste';
+global.db = mongoose.connect(uri, function (err) {
+  if (err) throw err;
+
+  console.log('Conectado ao mongo: ' + uri);
+});
+
+//configuração de qual engine usaremos para a view
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
@@ -43,7 +52,7 @@ app.use(methodOverride());
 app.use(pathName);
 
 //mapeamento de models/controllers/rotas
-load('models')
+consign('models')
   .then('controllers')
   .then('routes')
   .into(app);

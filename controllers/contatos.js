@@ -1,12 +1,16 @@
 //Controller de contatos(CRUD completo)
 module.exports = function (app) {
+  var User = require('./../models/user');
+
   var ContatosController = {
     index: function (req, res) {
-      var sess = req.session;
+      var _id = req.session.usuario._id;
 
-      var userSession = sess.usuario;
+      User.findById(_id, function (err, user) {
+        if(err) throw err;
 
-      res.render('contatos/index', { usuario: userSession });
+        res.render('contatos/index', { usuario: user });
+      });
     },
     create:function(req, res){
       if (!req.body) return res.sendStatus(400);
@@ -16,52 +20,95 @@ module.exports = function (app) {
 
       if (email && nome)
       {
-        var userSession = req.session.usuario;
-        userSession.contatos.push({email: email, nome: nome});
-      }
+        var _id = req.session.usuario._id;
 
-      res.redirect('/contatos');
+        User.findById(_id, function (err, user) {
+          if(err) throw err;
+
+          user.contatos.push({ email: email, nome: nome });
+          user.save(function (err) {
+            if (err) throw err;
+
+            console.log('contato salvo com sucesso!');
+
+            res.redirect('/contatos');
+          });
+        });
+      }
     },
     update: function (req, res) {
       if (!req.body) return res.sendStatus(400);
 
-      var id = req.params.id;
-      var user = req.session.usuario;
+      var contatoId = req.params.id;
+      var _id = req.session.usuario._id;
 
-      var email = req.body.email;
-      var nome = req.body.nome;
+      User.findById(_id, function (err, user) {
+        if(err) throw err;
 
-      user.contatos[id] = {nome: nome, email: email};
+        var contato = user.contatos[contatoId];
 
-      res.redirect('/contatos');
+        contato.nome = req.body.nome;
+        contato.email = req.body.email;
+
+        user.save(function (err) {
+          if (err) throw err;
+
+          console.log('contato atualizado com sucesso!');
+
+          res.redirect('/contatos');
+        });
+      });
     },
     delete:function (req, res) {
-      var id = req.params.id;
+      var contatoId = req.params.id;
+      var _id = req.session.usuario._id;
 
-      var contato = req.session.usuario.contatos[id];
+      User.findById(_id, function (err, user) {
+        if(err) throw err;
 
-      if (!contato)
-        return res.sendStatus(404);
+        var contato = user.contatos[contatoId];
 
-      res.render('contatos/delete', { contato: contato, id: id });
+        if (!contato)
+          return res.sendStatus(404);
+
+        res.render('contatos/delete', { contato: contato, id: contatoId });
+
+      });
     },
     confirmDelete:function (req, res) {
-      var id = req.params.id;
+      var _contatoId = req.params.id;
+      var _id = req.session.usuario._id;
 
-      req.session.usuario.contatos.splice(id, 1);
+      User.findById(_id, function (err, user) {
+        if(err) throw err;
 
-      res.redirect('/contatos');
+        var contatoId = user.contatos[_contatoId]._id;
+        user.contatos.id(contatoId).remove();
+
+        user.save(function (err) {
+          if (err) throw err;
+
+          console.log('contato deletado com sucesso!');
+
+          res.redirect('/contatos');
+        });
+      });
     },
-    edit: function(req, res)
-    {
-      var id = req.params.id;
+    edit: function(req, res){
+      var contatoId = req.params.id;
+      var _id = req.session.usuario._id;
 
-      var contato = req.session.usuario.contatos[id];
+      User.findById(_id, function (err, user) {
+        if(err) throw err;
 
-      if (!contato)
-        return res.sendStatus(404);
+        var contato = user.contatos[contatoId];
 
-      res.render('contatos/edit', { contato: contato, id: id });
+        if (!contato)
+          return res.sendStatus(404);
+
+        res.render('contatos/edit', { contato: contato, id: contatoId });
+
+      });
     }
   };
 

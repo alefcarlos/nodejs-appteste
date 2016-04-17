@@ -1,5 +1,7 @@
 //Controller de login
 module.exports = function (app) {
+  var User = require('./../models/user');
+
   var LoginController = {
     index: function (req, res) {
         res.render('login/index', { layout: '_layoutLogin' })
@@ -10,20 +12,44 @@ module.exports = function (app) {
       var sess = req.session
 
       var email = req.body.email;
-      var senha = req.body.senha;
 
-      if (!email && !senha)
+      if (!email)
         return res.redirect('/');
 
-      var usuario = { email: email, senha: senha};
-      usuario['contatos'] = [];
+      //Validar se o usuário existe:
+      var query = { email: email };
+      User.findOne(query, function (err, user) {
+        if (err) throw err;
+        console.log('tentou logar ' + query.email);
 
-      //inserir para teste
-      usuario.contatos.push({nome:'alef', email: 'alef.carlos@gmail.com'});
+        //Se o usuário exister, usá-lo, senão criar o usuário e salvar na sessão.
+        if (user){
+          console.log('encontrou usuario' + user);
+          sess.usuario = user;
 
-      sess.usuario = usuario;
+          console.log(sess.usuario);
 
-      res.redirect('/home');
+          res.redirect('/home');
+        }
+        else {
+          console.log('usuario não existe');
+          var usuario = new User({
+              email: email
+          });
+
+          usuario.save(function (err) {
+            if (err) throw err;
+
+            console.log('Novo usuário criado');
+          });
+
+          sess.usuario = usuario;
+
+          console.log(sess.usuario);
+
+          res.redirect('/home');
+        }
+      });
     },
     logout: function (req, res) {
       var sess = req.session;
