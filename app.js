@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 
 //Modulos customizados
 var pathName = require('./middleware/get-url-path');
+var error = require('./middleware/error');
 
 //variávelda da aplicação
 var app = express();
@@ -55,6 +56,10 @@ consign('models')
   .then('controllers')
   .then('routes')
   .into(app);
+
+//Erros
+app.use(error.notFound);
+app.use(error.serverError);
 
 //iniciar o servidor
 app.listen(3000, function(){ console.log('tá no ar!!');})

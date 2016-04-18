@@ -3,10 +3,11 @@ module.exports = function (app) {
   var User = require('./../models/user');
 
   var LoginController = {
-    index: function (req, res) {
-        res.render('login/index', { layout: '_layoutLogin' })
+    index: function (req, res, next) {
+      res.render('login/index', { layout: '_layoutBase' });
     },
     login: function (req, res) {
+
       if (!req.body) return res.sendStatus(400);
 
       var sess = req.session
