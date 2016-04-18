@@ -16,10 +16,12 @@ var app = express();
 
 //configuração da sessão
 var sess = {
-  secret: 'keyntalk',
+  secret: 'S3ssI0n',
+  name: 'app_Session_Id',
   resave: true,
   saveUninitialized: false,
   cookie: {
+    httpOnly: true,
      secure: false,
      maxAge: 60000
    }
